@@ -8,11 +8,14 @@ Context Compression - Model Definitions
 3. 模型推理封装
 """
 
+# Import Unsloth before any transformers usage elsewhere in the process.
+import unsloth  # noqa: F401
+
 import torch
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 
-from unsloth import FastLanguageModel, is_bfloat16_supported
+from unsloth import FastLanguageModel
 
 
 # =============================================================================
