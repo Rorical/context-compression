@@ -1,10 +1,13 @@
 # Context Compression Training System - Dependencies
-# Python 3.10+ recommended. Unsloth currently supports Python 3.13 or lower.
+# Python 3.10+ recommended.
 #
-# For Colab / Linux, install with:
+# Install the base dependencies with:
 #   pip install --upgrade pip
-#   pip install --upgrade --force-reinstall --no-cache-dir unsloth unsloth_zoo
 #   pip install -r requirements.txt
+#
+# Unsloth is intentionally NOT listed here because its dependency constraints
+# can conflict with the newest Hugging Face stack on Colab. Install Unsloth
+# separately for the training environment you actually use.
 
 # Core training stack
 torch>=2.10.0
@@ -14,10 +17,6 @@ accelerate>=1.13.0
 numpy>=1.26.0
 tqdm>=4.67.0
 pyyaml>=6.0.2
-
-# Unsloth
-unsloth>=2026.3.18
-unsloth_zoo>=2026.3.7
 
 # RL / PEFT
 trl>=0.29.1
