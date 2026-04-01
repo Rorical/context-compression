@@ -30,7 +30,7 @@ training:
   optim: "adamw_8bit"
 
   beta: 0.04
-  num_generations: 8
+  num_generations: 4
   epsilon: 0.2
 
   max_prompt_length: 24576
