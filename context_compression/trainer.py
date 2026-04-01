@@ -156,9 +156,21 @@ class ContextCompressionTrainer:
         )
 
         if eval_dataset is not None:
-            grpo_kwargs["eval_steps"] = training_config.get("eval_steps", 50)
-            grpo_kwargs["eval_strategy"] = "steps"
-            grpo_kwargs["do_eval"] = True
+            train_batch_size = training_config.get("per_device_train_batch_size", 1)
+            num_generations = training_config.get("num_generations", 4)
+            global_eval_batch_size = train_batch_size
+
+            if global_eval_batch_size % num_generations != 0:
+                self.logger.warning(
+                    "Disabling eval during GRPO setup because global eval batch size "
+                    "(%s) is not divisible by num_generations (%s).",
+                    global_eval_batch_size,
+                    num_generations,
+                )
+            else:
+                grpo_kwargs["eval_steps"] = training_config.get("eval_steps", 50)
+                grpo_kwargs["eval_strategy"] = "steps"
+                grpo_kwargs["do_eval"] = True
 
         grpo_config = GRPOConfig(**grpo_kwargs)
         
