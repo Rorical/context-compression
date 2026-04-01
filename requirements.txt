@@ -1,41 +1,42 @@
 # Context Compression Training System - Dependencies
-# Python 3.9+ required
+# Python 3.10+ recommended. Unsloth currently supports Python 3.13 or lower.
+#
+# For Colab / Linux, install with:
+#   pip install --upgrade pip
+#   pip install --upgrade --force-reinstall --no-cache-dir unsloth unsloth_zoo
+#   pip install -r requirements.txt
 
-# Core ML Libraries
-torch>=2.0.0
-transformers>=4.40.0
-datasets>=2.14.0
-accelerate>=0.25.0
+# Core training stack
+torch>=2.10.0
+transformers>=5.3.0
+datasets>=4.7.0
+accelerate>=1.13.0
+numpy>=1.26.0
+tqdm>=4.67.0
+pyyaml>=6.0.2
 
-# Unsloth for efficient training
-unsloth>=2024.12.0
+# Unsloth
+unsloth>=2026.3.18
+unsloth_zoo>=2026.3.7
 
-# RL Training
-trl>=0.12.0
-peft>=0.8.0
+# RL / PEFT
+trl>=0.29.1
+peft>=0.18.1
+mergekit>=0.1.4
 
-# Evaluation Metrics
+# Evaluation
 rouge-score>=0.1.2
-sacrebleu>=2.3.0
+sacrebleu>=2.6.0
 bert-score>=0.3.13
-nltk>=3.8.0
+nltk>=3.9.3
+sentence-transformers>=5.2.3
+tiktoken>=0.9.0
 
-# Embedding Models
-sentence-transformers>=2.3.0
-
-# Utilities
-numpy>=1.24.0
-tqdm>=4.65.0
-pyyaml>=6.0
-wandb>=0.16.0
-
-# Optional: for better token counting
-tiktoken>=0.5.0
-
-# Optional: for LLM-as-Judge evaluation
+# Tracking and optional evaluators
+wandb>=0.25.1
 openai>=1.0.0
 anthropic>=0.8.0
 
 # Development
-pytest>=7.4.0
-black>=23.0.0
+pytest>=8.3.0
+black>=25.0.0
