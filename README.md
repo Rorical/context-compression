@@ -49,6 +49,12 @@ Train with the default config:
 python train.py --config config.yaml
 ```
 
+High-memory single-GPU run for a 95.6GB NVIDIA G4 environment:
+
+```bash
+python train.py --config configs/nvidia_g4_95_6gb.yaml
+```
+
 Quick smoke test with synthetic data:
 
 ```bash
