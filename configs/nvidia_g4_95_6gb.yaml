@@ -43,6 +43,7 @@ training:
 
   use_vllm: true
   vllm_gpu_memory_utilization: 0.8
+  max_lora_rank: 128
   unsloth_logit_chunk_multiplier: 4
   unsloth_grpo_mini_batch: 1
 
