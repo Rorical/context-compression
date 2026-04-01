@@ -5,19 +5,15 @@ Context Compression - Training Module
 基于Unsloth + GRPO实现强化学习训练
 """
 
-import os
 import torch
 from typing import Optional, List, Dict, Any
-from pathlib import Path
 from tqdm import tqdm
 
-from unsloth import FastLanguageModel, is_bfloat16_supported
-from trl import GRPOTrainer, GRPOConfig
 from datasets import Dataset
 
 from .utils import setup_logging, save_config, print_gpu_memory
 from .models import ModelLoader
-from .rewards import create_reward_functions, set_reward_config
+from .rewards import set_reward_config
 
 
 # =============================================================================
@@ -98,6 +94,15 @@ class ContextCompressionTrainer:
         """
         
         self.logger.info("Setting up GRPO trainer...")
+
+        try:
+            from unsloth import is_bfloat16_supported
+            from trl import GRPOTrainer, GRPOConfig
+        except ImportError as exc:
+            raise ImportError(
+                "GRPO training dependencies are incomplete. Install the latest "
+                "training stack from requirements.txt, including mergekit."
+            ) from exc
         
         # 创建奖励函数
         reward_funcs = self._create_reward_functions()
