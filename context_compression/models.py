@@ -22,6 +22,55 @@ from unsloth import FastLanguageModel
 # Model Loader
 # =============================================================================
 
+def load_tokenizer_for_model(model_name: str) -> Any:
+    """
+    Load a text tokenizer for the configured model.
+
+    For newer remote-code or processor-backed models such as Qwen3.5,
+    AutoTokenizer may fail unless a newer transformers build is installed.
+    This helper falls back to AutoProcessor.tokenizer when available and raises
+    a clearer error for unsupported local transformers versions.
+    """
+
+    from transformers import AutoProcessor, AutoTokenizer
+
+    load_kwargs = {
+        "trust_remote_code": True,
+    }
+
+    tokenizer_error = None
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(model_name, **load_kwargs)
+        if tokenizer.pad_token is None and tokenizer.eos_token is not None:
+            tokenizer.pad_token = tokenizer.eos_token
+        return tokenizer
+    except Exception as exc:
+        tokenizer_error = exc
+
+    try:
+        processor = AutoProcessor.from_pretrained(model_name, **load_kwargs)
+        tokenizer = getattr(processor, "tokenizer", None)
+        if tokenizer is not None:
+            if tokenizer.pad_token is None and tokenizer.eos_token is not None:
+                tokenizer.pad_token = tokenizer.eos_token
+            return tokenizer
+    except Exception:
+        pass
+
+    model_name_lower = model_name.lower()
+    if "qwen3.5" in model_name_lower:
+        raise RuntimeError(
+            "Failed to load the tokenizer for Qwen3.5. The Qwen3.5 model card "
+            "currently requires the latest transformers from main. In Colab, run:\n"
+            '  pip uninstall -y transformers tokenizers\n'
+            '  pip install "transformers[serving] @ git+https://github.com/huggingface/transformers.git@main"\n'
+            "then restart the runtime and try again."
+        ) from tokenizer_error
+
+    raise RuntimeError(
+        f"Failed to load tokenizer for model '{model_name}'."
+    ) from tokenizer_error
+
 class ModelLoader:
     """模型加载器"""
     

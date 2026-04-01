@@ -10,6 +10,7 @@ from context_compression import (
     get_config_for_gpu,
     get_default_config,
     load_config,
+    load_tokenizer_for_model,
 )
 from context_compression.utils import get_gpu_info
 
@@ -134,11 +135,7 @@ def update_config_from_args(config: dict, args: argparse.Namespace) -> dict:
 
 def prepare_data(config: dict, args: argparse.Namespace):
     """Load and preprocess the training and evaluation datasets."""
-    from transformers import AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(config["model"]["name"])
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer = load_tokenizer_for_model(config["model"]["name"])
 
     pipeline = DataPipeline(tokenizer=tokenizer)
 

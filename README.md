@@ -43,6 +43,15 @@ pip install -r requirements.txt
 
 For GRPO training with Unsloth, install Unsloth separately after the base requirements. It is not pinned in `requirements.txt` because its dependency constraints can conflict with the newest Colab Hugging Face stack.
 
+For `Qwen3.5` models specifically, the model card currently says the latest `transformers` from `main` is required. If tokenizer loading fails on Colab, run:
+
+```bash
+pip uninstall -y transformers tokenizers
+pip install "transformers[serving] @ git+https://github.com/huggingface/transformers.git@main"
+```
+
+Then restart the runtime before training.
+
 ## Training
 
 Train with the default config:
