@@ -9,11 +9,13 @@ The repository is now organized around a single implementation based on the inte
 ```text
 .
 ├── README.md
-├── config.yaml
 ├── requirements.txt
 ├── train.py
 ├── evaluate.py
 ├── inference.py
+├── configs/
+│   ├── default.yaml
+│   └── nvidia_g4_95_6gb.yaml
 └── context_compression/
     ├── __init__.py
     ├── data_pipeline.py
@@ -57,7 +59,7 @@ Then restart the runtime before training.
 Train with the default config:
 
 ```bash
-python train.py --config config.yaml
+python train.py --config configs/default.yaml
 ```
 
 High-memory single-GPU run for a 95.6GB NVIDIA G4 environment:
@@ -190,7 +192,7 @@ R_total =
   0.2 * compression
 ```
 
-`config.yaml` controls model, LoRA, GRPO, data, evaluation, and output settings.
+`configs/default.yaml` controls model, LoRA, GRPO, data, evaluation, and output settings.
 
 ## Notes
 
