@@ -105,10 +105,15 @@ class ModelLoader:
         model_name = model_name or self.config["model"]["name"]
         max_seq_length = max_seq_length or self.config["model"]["max_seq_length"]
         load_in_4bit = load_in_4bit if load_in_4bit is not None else self.config["model"]["load_in_4bit"]
+        max_lora_rank = self.config.get("training", {}).get(
+            "max_lora_rank",
+            self.config.get("lora", {}).get("rank", 64),
+        )
         
         print(f"Loading model: {model_name}")
         print(f"Max sequence length: {max_seq_length}")
         print(f"4-bit quantization: {load_in_4bit}")
+        print(f"Max LoRA rank: {max_lora_rank}")
         
         # 加载模型
         self.model, self.tokenizer = FastLanguageModel.from_pretrained(
@@ -116,6 +121,7 @@ class ModelLoader:
             max_seq_length=max_seq_length,
             load_in_4bit=load_in_4bit,
             fast_inference=self.config["training"].get("use_vllm", True),
+            max_lora_rank=max_lora_rank,
             gpu_memory_utilization=self.config["training"].get("vllm_gpu_memory_utilization", 0.7),
         )
         
@@ -544,24 +550,6 @@ def load_model_for_inference(
 
 def get_default_config() -> Dict[str, Any]:
     """获取默认配置"""
-    return {
-        "model": {
-            "name": "unsloth/Qwen2.5-7B-Instruct",
-            "max_seq_length": 8192,
-            "load_in_4bit": True,
-        },
-        "lora": {
-            "rank": 64,
-            "alpha": 64,
-            "target_modules": [
-                "q_proj", "k_proj", "v_proj", "o_proj",
-                "gate_proj", "up_proj", "down_proj",
-            ],
-        },
-        "training": {
-            "use_vllm": True,
-            "vllm_gpu_memory_utilization": 0.7,
-            "max_prompt_length": 4096,
-            "max_completion_length": 1024,
-        },
-    }
+    from .utils import get_default_config as utils_get_default_config
+
+    return utils_get_default_config()
