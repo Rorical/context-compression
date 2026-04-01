@@ -125,7 +125,7 @@ def get_default_config() -> Dict[str, Any]:
         },
         "training": {
             "num_train_epochs": 3,
-            "per_device_train_batch_size": 1,
+            "per_device_train_batch_size": 2,
             "gradient_accumulation_steps": 8,
             "learning_rate": 1e-6,
             "lr_scheduler_type": "cosine",
@@ -133,7 +133,7 @@ def get_default_config() -> Dict[str, Any]:
             "weight_decay": 0.01,
             "optim": "adamw_8bit",
             "beta": 0.04,
-            "num_generations": 4,
+            "num_generations": 2,
             "epsilon": 0.2,
             "max_prompt_length": 4096,
             "max_completion_length": 1024,
@@ -142,6 +142,7 @@ def get_default_config() -> Dict[str, Any]:
             "eval_steps": 50,
             "use_vllm": True,
             "vllm_gpu_memory_utilization": 0.7,
+            "max_lora_rank": 64,
         },
         "rewards": {
             "task_weight": 0.4,
@@ -171,48 +172,53 @@ def get_config_for_gpu(memory_gb: float) -> Dict[str, Any]:
         # 8-16GB GPU
         config["model"]["load_in_4bit"] = True
         config["lora"]["rank"] = 32
-        config["training"]["per_device_train_batch_size"] = 1
+        config["training"]["per_device_train_batch_size"] = 2
         config["training"]["gradient_accumulation_steps"] = 16
-        config["training"]["num_generations"] = 4
+        config["training"]["num_generations"] = 2
         config["training"]["max_prompt_length"] = 2048
         config["training"]["max_completion_length"] = 512
+        config["training"]["max_lora_rank"] = 32
     elif memory_gb < 32:
         # 16-32GB GPU
         config["model"]["load_in_4bit"] = True
         config["lora"]["rank"] = 64
-        config["training"]["per_device_train_batch_size"] = 1
+        config["training"]["per_device_train_batch_size"] = 2
         config["training"]["gradient_accumulation_steps"] = 8
-        config["training"]["num_generations"] = 8
+        config["training"]["num_generations"] = 2
         config["training"]["max_prompt_length"] = 4096
         config["training"]["max_completion_length"] = 1024
+        config["training"]["max_lora_rank"] = 64
     elif memory_gb < 48:
         # 32-48GB GPU
         config["model"]["load_in_4bit"] = True
         config["lora"]["rank"] = 128
-        config["training"]["per_device_train_batch_size"] = 2
+        config["training"]["per_device_train_batch_size"] = 4
         config["training"]["gradient_accumulation_steps"] = 4
-        config["training"]["num_generations"] = 8
+        config["training"]["num_generations"] = 4
         config["training"]["max_prompt_length"] = 8192
         config["training"]["max_completion_length"] = 2048
+        config["training"]["max_lora_rank"] = 128
     elif memory_gb < 90:
         # 48-90GB GPU
         config["model"]["load_in_4bit"] = True
         config["lora"]["rank"] = 128
-        config["training"]["per_device_train_batch_size"] = 2
+        config["training"]["per_device_train_batch_size"] = 4
         config["training"]["gradient_accumulation_steps"] = 4
-        config["training"]["num_generations"] = 8
+        config["training"]["num_generations"] = 4
         config["training"]["max_prompt_length"] = 16384
         config["training"]["max_completion_length"] = 4096
+        config["training"]["max_lora_rank"] = 128
     else:
         # 90GB+ GPU
         config["model"]["load_in_4bit"] = True
         config["lora"]["rank"] = 128
         config["training"]["per_device_train_batch_size"] = 4
         config["training"]["gradient_accumulation_steps"] = 2
-        config["training"]["num_generations"] = 8
+        config["training"]["num_generations"] = 4
         config["training"]["max_prompt_length"] = 24576
         config["training"]["max_completion_length"] = 4096
         config["training"]["vllm_gpu_memory_utilization"] = 0.8
+        config["training"]["max_lora_rank"] = 128
     
     return config
 
