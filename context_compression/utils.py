@@ -194,15 +194,25 @@ def get_config_for_gpu(memory_gb: float) -> Dict[str, Any]:
         config["training"]["num_generations"] = 8
         config["training"]["max_prompt_length"] = 8192
         config["training"]["max_completion_length"] = 2048
-    else:
-        # 48GB+ GPU
-        config["model"]["load_in_4bit"] = False
+    elif memory_gb < 90:
+        # 48-90GB GPU
+        config["model"]["load_in_4bit"] = True
         config["lora"]["rank"] = 128
-        config["training"]["per_device_train_batch_size"] = 4
+        config["training"]["per_device_train_batch_size"] = 2
         config["training"]["gradient_accumulation_steps"] = 4
-        config["training"]["num_generations"] = 16
+        config["training"]["num_generations"] = 8
         config["training"]["max_prompt_length"] = 16384
         config["training"]["max_completion_length"] = 4096
+    else:
+        # 90GB+ GPU
+        config["model"]["load_in_4bit"] = True
+        config["lora"]["rank"] = 128
+        config["training"]["per_device_train_batch_size"] = 4
+        config["training"]["gradient_accumulation_steps"] = 2
+        config["training"]["num_generations"] = 8
+        config["training"]["max_prompt_length"] = 24576
+        config["training"]["max_completion_length"] = 4096
+        config["training"]["vllm_gpu_memory_utilization"] = 0.8
     
     return config
 
