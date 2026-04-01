@@ -41,6 +41,8 @@ The repository is now organized around a single implementation based on the inte
 pip install -r requirements.txt
 ```
 
+For GRPO training with Unsloth, install Unsloth separately after the base requirements. It is not pinned in `requirements.txt` because its dependency constraints can conflict with the newest Colab Hugging Face stack.
+
 ## Training
 
 Train with the default config:
