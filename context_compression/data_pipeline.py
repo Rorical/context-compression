@@ -21,6 +21,10 @@ from collections import defaultdict
 import torch
 from torch.utils.data import Dataset, DataLoader
 from datasets import Dataset as HFDataset
+
+# Import Unsloth before transformers so its patches are applied.
+import unsloth  # noqa: F401
+
 from transformers import PreTrainedTokenizer
 import numpy as np
 
