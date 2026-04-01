@@ -110,7 +110,7 @@ class ContextCompressionTrainer:
         # GRPO配置
         training_config = self.config.get("training", {})
         
-        grpo_config = GRPOConfig(
+        grpo_kwargs = dict(
             # 输出目录
             output_dir=self.config.get("output", {}).get("output_dir", "./checkpoints"),
             
@@ -149,16 +149,18 @@ class ContextCompressionTrainer:
             # 日志和保存
             logging_steps=training_config.get("logging_steps", 10),
             save_steps=training_config.get("save_steps", 100),
-            eval_steps=training_config.get("eval_steps", 50),
             save_total_limit=training_config.get("save_total_limit", 3),
-            
-            # 评估
-            evaluation_strategy="steps" if eval_dataset else "no",
-            do_eval=eval_dataset is not None,
-            
+
             # 报告
             report_to="wandb" if self.config.get("logging", {}).get("use_wandb", False) else None,
         )
+
+        if eval_dataset is not None:
+            grpo_kwargs["eval_steps"] = training_config.get("eval_steps", 50)
+            grpo_kwargs["eval_strategy"] = "steps"
+            grpo_kwargs["do_eval"] = True
+
+        grpo_config = GRPOConfig(**grpo_kwargs)
         
         # 创建GRPOTrainer
         self.trainer = GRPOTrainer(
